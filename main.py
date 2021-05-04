@@ -17,6 +17,7 @@ import matplotlib.image as mpimg
 # Press the green button in the gutter to run the script.
 from PIL.ImageDraw import ImageDraw
 from figures.Circle import Circle
+from figures.Generator import Generator
 from figures.Triangle import Triangle
 
 
@@ -49,13 +50,16 @@ def gaussian_blur(img: PIL.Image.Image, top_left: Tuple[int, int], bottom_right:
 
 
 def main():
+    generator = Generator()
     with Image.open('MRI_MSC_Dataset/sub-001/png/50.png') as image:
-        circle = Circle((150, 150), radius=5)
-        triangle = Triangle(height=10, angle=2, center_circle=circle)
-        image = circle.draw(image)
-        image = triangle.draw(image)
-        image = triangle.blur(image)
-        image.save('MRI_MSC_Dataset/sub-001/png/50-szumy-auto.png')
+        image = generator.generate(image)
+        image.save('MRI_MSC_Dataset/sub-001/png/50-szumy-auto-full.png')
+        # circle = Circle((150, 150), radius=5)
+        # triangle = Triangle(height=10, angle=2, center_circle=circle)
+        # image = circle.draw(image)
+        # image = triangle.draw(image)
+        # image = triangle.blur(image)
+        # image.save('MRI_MSC_Dataset/sub-001/png/50-szumy-auto.png')
         # circle = (150, 150)
         # radius = 5
         # triangle = [(150, 145), (150, 155), (170, 150)]

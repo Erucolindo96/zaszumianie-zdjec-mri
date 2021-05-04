@@ -34,13 +34,13 @@ class Triangle:
         triangle = self.__triangle()
         min_x = min(triangle, key=lambda point: point[0])[0]
         min_y = min(triangle, key=lambda point: point[1])[1]
-        return min_x - 1, min_y - 1
+        return min_x - 1, min_y - 1 #zeby było tez trocher wiecej niz sam trojkat
 
     def __bottom_right(self):
         triangle = self.__triangle()
         max_x = max(triangle, key=lambda point: point[0])[0]
         max_y = max(triangle, key=lambda point: point[1])[1]
-        return max_x + 1, max_y + 1
+        return max_x + 1, max_y + 1 #zeby było tez trocher wiecej niz sam trojkat
 
     def draw(self, img: Image) -> Image:
         draw = ImageDraw.Draw(img)
