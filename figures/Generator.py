@@ -2,6 +2,7 @@ from typing import List
 
 from PIL.Image import Image
 
+from config import Config
 from figures.Circle import Circle
 from figures.Triangle import Triangle
 from randomizer.Randomizer import Randomizer
@@ -27,6 +28,8 @@ class Generator:
             noise_radiuses = self.__generate_noise_radiuses(drawed_electrode=electrode)
             for radius in noise_radiuses:
                 img = radius.draw(img)
+                if Config.blur_triangles:
+                    img = radius.blur(img)
         return img
 
     def __generate_noise_radiuses(self, drawed_electrode: Circle) -> List[Triangle]:
