@@ -17,6 +17,12 @@ class Circle:
     def __bottom_right(self):
         return tuple(x + self.radius for x in self.pos)
 
+    def __top_left_for_blur(self):
+        return tuple(x - 2 for x in self.__top_left())
+
+    def __bottom_right_for_blur(self):
+        return tuple(x + 2 for x in self.__bottom_right())
+
     def draw(self, img: Image) -> Image:
         top_left = self.__top_left()
         bottom_right = self.__bottom_right()
@@ -25,8 +31,8 @@ class Circle:
         return img
 
     def blur(self, img: Image) -> Image:
-        top_left = self.__top_left()
-        bottom_right = self.__bottom_right()
+        top_left = self.__top_left_for_blur()
+        bottom_right = self.__bottom_right_for_blur()
 
         region = img.crop(top_left + bottom_right)
         filtered = region.filter(ImageFilter.GaussianBlur(radius=1))

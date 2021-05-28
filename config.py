@@ -3,13 +3,13 @@ class Config:
     dest_dir = 'MRI_MSC_Dataset/sub-001/png/'
 
     circle_min_r = 1
-    circle_max_r = 10
+    circle_max_r = 4
     circle_pos_mean = 128
     circle_pos_sigma = 30
     triangle_min_angle = 0
     triangle_max_angle = 6.28
     triangle_min_h = 5
-    triangle_max_h = 20
+    triangle_max_h = 16
 
     min_triangle_cnt = 0
     max_triangle_cnt = 5

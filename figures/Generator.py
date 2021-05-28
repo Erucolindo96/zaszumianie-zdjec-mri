@@ -30,6 +30,9 @@ class Generator:
                 img = radius.draw(img)
                 if Config.blur_triangles:
                     img = radius.blur(img)
+
+            if not noise_radiuses:
+                img = electrode.blur(img)
         return img
 
     def __generate_noise_radiuses(self, drawed_electrode: Circle) -> List[Triangle]:
