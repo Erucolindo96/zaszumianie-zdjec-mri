@@ -17,4 +17,6 @@ class Config:
     min_circle_cnt = 1
     max_circle_cnt = 4
 
+    bounding_box_gain = 3
+
     blur_triangles = True

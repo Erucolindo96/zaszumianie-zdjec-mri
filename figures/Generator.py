@@ -1,8 +1,10 @@
 from typing import List
 
 from PIL.Image import Image
+from PIL.ImageDraw import ImageDraw
 
 from config import Config
+from figures.BoundingBox import BoundingBox
 from figures.Circle import Circle
 from figures.Triangle import Triangle
 from randomizer.Randomizer import Randomizer
@@ -33,6 +35,8 @@ class Generator:
 
             if not noise_radiuses:
                 img = electrode.blur(img)
+            bounding_box = BoundingBox(electrode, noise_radiuses, Config.bounding_box_gain)
+            img = bounding_box.draw(img)
         return img
 
     def __generate_noise_radiuses(self, drawed_electrode: Circle) -> List[Triangle]:
@@ -48,3 +52,5 @@ class Generator:
             noise_radiuses.append(Triangle(height=h, angle=angle, center_circle=drawed_electrode))
 
         return noise_radiuses
+
+
