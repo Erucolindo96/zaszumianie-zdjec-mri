@@ -1,6 +1,8 @@
 class Config:
     nifti_file = '/home/krzysztof/PycharmProjects/zaszumianie-zdjec-mri/MRI_MSC_Dataset/sub-001/ses-1/anat/t2_spc2_an_Anonymized.nii.gz'
-    dest_dir = 'MRI_MSC_Dataset/sub-001/png/'
+    dest_dir = 'MRI_MSC_Dataset/sub-001/generated/'
+
+    orig_files = 'MRI_MSC_Dataset/sub-001/orig/'
 
     circle_min_r = 1
     circle_max_r = 4
@@ -20,5 +22,5 @@ class Config:
     bound_artifacts = True
     bounding_box_gain = 3
     export_artifacts = True
-    export_artifacts_dir = 'MRI_MSC_Dataset/sub-001/png/artifacts'
+    export_artifacts_dir = 'MRI_MSC_Dataset/sub-001/artifacts/'
     blur_triangles = True

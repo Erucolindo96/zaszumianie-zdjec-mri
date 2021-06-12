@@ -1,4 +1,3 @@
-
 import nibabel as nib
 from PIL import Image, ImageFilter
 import numpy as np
@@ -6,9 +5,12 @@ import numpy as np
 from config import Config
 from figures.Generator import Generator
 
+
 def main():
     nifti_file_path = Config.nifti_file
     dest_dir = Config.dest_dir
+    orig_img_dir = Config.orig_files
+
     nifti_file = nib.load(nifti_file_path).get_data()
     img_cnt = nifti_file.shape[2]
 
@@ -17,6 +19,10 @@ def main():
         image = Image.fromarray(nifti_file[:, :, img_num].astype(np.uint8))
         image = generator.generate(image)
         image.save(dest_dir + '{}.png'.format(img_num))
+
+        orig_image = Image.fromarray(nifti_file[:, :, img_num].astype(np.uint8))
+        orig_image.save(orig_img_dir + '{}.png'.format(img_num))
+
 
 if __name__ == '__main__':
     main()
