@@ -1,7 +1,6 @@
 from typing import List
 
 from PIL.Image import Image
-from PIL.ImageDraw import ImageDraw
 
 from config import Config
 from figures.BoundingBox import BoundingBox
@@ -18,7 +17,7 @@ class Generator:
     def generate(self, img: Image) -> Image:
         circle_cnt = self.randomizer.circle_cnt()
         print('Circle cnt: {}'.format(circle_cnt))
-
+        artifacts_b_boxes = []
         for i in range(circle_cnt):
             circle_pos = self.randomizer.circle_pos()
             circle_r = self.randomizer.circle_r()
@@ -35,8 +34,23 @@ class Generator:
 
             if not noise_radiuses:
                 img = electrode.blur(img)
-            bounding_box = BoundingBox(electrode, noise_radiuses, Config.bounding_box_gain)
-            img = bounding_box.draw(img)
+
+            artifacts_b_boxes.append(
+                BoundingBox(electrode, noise_radiuses, Config.bounding_box_gain, Config.export_artifacts_dir))
+
+        if Config.export_artifacts:
+            self.__export_artifacts(artifacts_b_boxes, img)
+        if Config.bound_artifacts:
+            img = self.__draw_artifacts_bounding_boxes(artifacts_b_boxes, img)
+        return img
+
+    def __export_artifacts(self, b_boxes: List[BoundingBox], img: Image):
+        for b_box in b_boxes:
+            b_box.export(img)
+
+    def __draw_artifacts_bounding_boxes(self, b_boxes: List[BoundingBox], img: Image):
+        for b_box in b_boxes:
+            img = b_box.draw(img)
         return img
 
     def __generate_noise_radiuses(self, drawed_electrode: Circle) -> List[Triangle]:
@@ -52,5 +66,3 @@ class Generator:
             noise_radiuses.append(Triangle(height=h, angle=angle, center_circle=drawed_electrode))
 
         return noise_radiuses
-
-

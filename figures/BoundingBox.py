@@ -1,3 +1,4 @@
+from os import fdopen
 from typing import List, Tuple
 
 from PIL import ImageDraw
@@ -5,13 +6,15 @@ from PIL.Image import Image
 
 from figures.Circle import Circle
 from figures.Triangle import Triangle
+import tempfile
 
 
 class BoundingBox:
-    def __init__(self, circle: Circle, radiuses: List[Triangle], bb_gain: int):
+    def __init__(self, circle: Circle, radiuses: List[Triangle], bb_gain: int, artifact_dir: str):
         self.circle = circle
         self.radiuses = radiuses
         self.bounding_box_gain = bb_gain
+        (_, self.artifact_file) = tempfile.mkstemp(dir=artifact_dir, suffix='.png')
 
     def __bounding_box(self) -> List[Tuple[int, int]]:
         circle_r = self.circle.radius
@@ -25,7 +28,13 @@ class BoundingBox:
 
         return [top_left, bottom_right]
 
-    def draw(self, img: Image):
+    def draw(self, img: Image) -> Image:
         draw = ImageDraw.Draw(img)
         draw.rectangle(self.__bounding_box(), outline='orange')
         return img
+
+    def export(self, img: Image) -> Image:
+        b_box = self.__bounding_box()
+        artifact = img.crop(b_box[0] + b_box[1])
+        artifact.save(self.artifact_file)
+        return artifact

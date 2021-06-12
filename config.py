@@ -17,6 +17,8 @@ class Config:
     min_circle_cnt = 1
     max_circle_cnt = 4
 
+    bound_artifacts = True
     bounding_box_gain = 3
-
+    export_artifacts = True
+    export_artifacts_dir = 'MRI_MSC_Dataset/sub-001/png/artifacts'
     blur_triangles = True
