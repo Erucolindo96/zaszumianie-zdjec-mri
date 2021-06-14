@@ -9,10 +9,12 @@ from figures.Generator import Generator
 
 
 class TestImageCreator:
-    def __init__(self, nifti_files_paths: List[str], generated_dir: str, images_count: int):
+    def __init__(self, nifti_files_paths: List[str], generated_dir: str, generated_with_b_box_dir: str,
+                 images_count: int):
         self.images = []
         self.generated_images_dir = generated_dir
         self.images_count = images_count
+        self.generated_with_b_box_images_dir = generated_with_b_box_dir
 
         for nifti_path in nifti_files_paths:
             nifti = nib.load(nifti_path).get_data()
@@ -37,17 +39,16 @@ class TestImageCreator:
             image_filename = image_filepath.split('/')[-1]
             image.save(image_filepath)
 
+            self.__save_with_b_boxes(image, generator, image_filename)
+
             self.artifact_positioner.add_image(generator.artifacts_b_boxes, image_filename)
 
         self.artifact_positioner.generate_artifacts_pos_file()
 
-    #
-    # def create_plain_images(self):
-    #     for (filename, nifti) in self.nifti_files.items():
-    #         for image_num in range(TestImageCreator.__image_cnt(nifti)):
-    #             orig_image = Image.fromarray(nifti[:, :, image_num].astype(np.uint8))
-    #             orig_image.save(self.plain_images_dir + f'{image_num}.png')
+    def __save_with_b_boxes(self, image: Image, generator: Generator, filename):
+        for b_box in generator.artifacts_b_boxes:
+            image = b_box.draw(image)
+        image.save(f'{self.generated_with_b_box_images_dir}{filename}')
 
     def create(self):
         self.create_with_artifacts()
-        # self.create_plain_images()

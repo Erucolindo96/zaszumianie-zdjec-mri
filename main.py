@@ -11,8 +11,10 @@ def main():
     #
     # train_image_creator.create()
     test_image_creator = TestImageCreator(nifti_files_paths=Config.nifti_test_files,
+                                          generated_with_b_box_dir=Config.test_generated_with_b_box_dir,
                                           generated_dir=Config.test_generated_dir, images_count=Config.test_images_cnt)
     test_image_creator.create()
+
 
 if __name__ == '__main__':
     main()
