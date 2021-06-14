@@ -8,6 +8,8 @@ class Config:
 
     train_plain_files = 'MRI_MSC_Dataset/train/plain/'
 
+    train_image_creating_iterations = 1
+
     circle_min_r = 1
     circle_max_r = 4
     circle_pos_mean = 128
