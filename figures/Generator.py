@@ -13,11 +13,11 @@ class Generator:
 
     def __init__(self):
         self.randomizer = Randomizer()
+        self.artifacts_b_boxes = []
 
     def generate(self, img: Image) -> Image:
         circle_cnt = self.randomizer.circle_cnt()
         print('Circle cnt: {}'.format(circle_cnt))
-        artifacts_b_boxes = []
         for i in range(circle_cnt):
             circle_pos = self.randomizer.circle_pos()
             circle_r = self.randomizer.circle_r()
@@ -35,21 +35,21 @@ class Generator:
             if not noise_radiuses:
                 img = electrode.blur(img)
 
-            artifacts_b_boxes.append(
+            self.artifacts_b_boxes.append(
                 BoundingBox(electrode, noise_radiuses, Config.bounding_box_gain, Config.export_artifacts_dir))
 
         if Config.export_artifacts:
-            self.__export_artifacts(artifacts_b_boxes, img)
+            self.__export_artifacts(img)
         if Config.bound_artifacts:
-            img = self.__draw_artifacts_bounding_boxes(artifacts_b_boxes, img)
+            img = self.__draw_artifacts_bounding_boxes(img)
         return img
 
-    def __export_artifacts(self, b_boxes: List[BoundingBox], img: Image):
-        for b_box in b_boxes:
+    def __export_artifacts(self, img: Image):
+        for b_box in self.artifacts_b_boxes:
             b_box.export(img)
 
-    def __draw_artifacts_bounding_boxes(self, b_boxes: List[BoundingBox], img: Image):
-        for b_box in b_boxes:
+    def __draw_artifacts_bounding_boxes(self, img: Image):
+        for b_box in self.artifacts_b_boxes:
             img = b_box.draw(img)
         return img
 

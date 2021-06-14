@@ -16,7 +16,7 @@ class BoundingBox:
         self.bounding_box_gain = bb_gain
         (_, self.artifact_file) = tempfile.mkstemp(dir=artifact_dir, suffix='.png')
 
-    def __bounding_box(self) -> List[Tuple[int, int]]:
+    def bounding_box_pos(self) -> List[Tuple[int, int]]:
         circle_r = self.circle.radius
         max_radius = max(self.radiuses, key=lambda radius: radius.height) if self.radiuses else None
 
@@ -30,11 +30,11 @@ class BoundingBox:
 
     def draw(self, img: Image) -> Image:
         draw = ImageDraw.Draw(img)
-        draw.rectangle(self.__bounding_box(), outline='orange')
+        draw.rectangle(self.bounding_box_pos(), outline='orange')
         return img
 
     def export(self, img: Image) -> Image:
-        b_box = self.__bounding_box()
+        b_box = self.bounding_box_pos()
         artifact = img.crop(b_box[0] + b_box[1])
         artifact.save(self.artifact_file)
         return artifact

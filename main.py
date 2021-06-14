@@ -3,6 +3,7 @@ from PIL import Image, ImageFilter
 import numpy as np
 
 from config import Config
+from figures.ArtifactsPositioner import ArtifactsPositioner
 from figures.Generator import Generator
 
 
@@ -14,14 +15,31 @@ def main():
     nifti_file = nib.load(nifti_file_path).get_data()
     img_cnt = nifti_file.shape[2]
 
-    generator = Generator()
+    artifact_positioner = ArtifactsPositioner(dest_dir)
+
     for img_num in range(img_cnt):
         image = Image.fromarray(nifti_file[:, :, img_num].astype(np.uint8))
+
+        generator = Generator()
         image = generator.generate(image)
-        image.save(dest_dir + '{}.png'.format(img_num))
+
+        image_filename = '{}.png'.format(img_num)
+        image.save(dest_dir + image_filename)
+
+        artifact_positioner.add_image(generator.artifacts_b_boxes, image_filename)
 
         orig_image = Image.fromarray(nifti_file[:, :, img_num].astype(np.uint8))
-        orig_image.save(orig_img_dir + '{}.png'.format(img_num))
+        orig_image.save(orig_img_dir + image_filename)
+
+    artifact_positioner.generate_artifacts_pos_file()
+
+
+#
+# def generate_image(img_num: int, nifti_file: np.array, dest_dir: str):
+#     image = Image.fromarray(nifti_file[:, :, img_num].astype(np.uint8))
+#     generator = Generator()
+#     image = generator.generate(image)
+#     image.save(dest_dir + '{}.png'.format(img_num))
 
 
 if __name__ == '__main__':
