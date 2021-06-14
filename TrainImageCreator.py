@@ -25,7 +25,7 @@ class TrainImageCreator:
     def __image_cnt(nifti) -> int:
         return nifti.shape[2]
 
-    def create(self):
+    def create_with_artifacts(self):
         for iter in range(self.iterations):
             for (filename, nifti) in self.nifti_files.items():
                 for image_num in range(TrainImageCreator.__image_cnt(nifti)):
@@ -41,7 +41,14 @@ class TrainImageCreator:
 
                     self.artifact_positioner.add_image(generator.artifacts_b_boxes, image_filename)
 
-                    orig_image = Image.fromarray(curr_image)
-                    orig_image.save(self.plain_images_dir + image_filename)
-
         self.artifact_positioner.generate_artifacts_pos_file()
+
+    def create_plain_images(self):
+        for (filename, nifti) in self.nifti_files.items():
+            for image_num in range(TrainImageCreator.__image_cnt(nifti)):
+                orig_image = Image.fromarray(nifti[:, :, image_num].astype(np.uint8))
+                orig_image.save(self.plain_images_dir + f'{image_num}.png')
+
+    def create(self):
+        self.create_with_artifacts()
+        self.create_plain_images()
