@@ -14,8 +14,8 @@ class TrainImageCreator:
         self.plain_images_dir = plain_dir
 
         for nifti_path in nifti_files_paths:
-            # nifti_filename = nifti_path.split('/')[-1]
-            self.nifti_files[nifti_path] = nib.load(nifti_path).get_data()
+            nifti_filename_without_extention = nifti_path.split('/')[-1].split('.')[0]
+            self.nifti_files[nifti_filename_without_extention] = nib.load(nifti_path).get_data()
 
         self.artifact_positioner = ArtifactsPositioner(self.generated_images_dir)
 
@@ -23,28 +23,21 @@ class TrainImageCreator:
     def __image_cnt(nifti) -> int:
         return nifti.shape[2]
 
-    def __get_nifti_as_array(self):
-        lis = [elem for elem in self.nifti_files.values()]
-        seq = (self.nifti_files.values())
-        return np.concatenate((lis), axis=2)
-
     def create(self):
-        all_nifti_array = self.__get_nifti_as_array()
-        image_cnt = TrainImageCreator.__image_cnt(all_nifti_array)
+        for (filename, nifti) in self.nifti_files.items():
+            for image_num in range(TrainImageCreator.__image_cnt(nifti)):
+                curr_image = nifti[:, :, image_num].astype(np.uint8)
+                image = Image.fromarray(curr_image)
 
-        for image_num in range(image_cnt):
-            curr_image = all_nifti_array[:, :, image_num].astype(np.uint8)
-            image = Image.fromarray(curr_image)
+                generator = Generator()
+                image = generator.generate(image)
 
-            generator = Generator()
-            image = generator.generate(image)
+                image_filename = f'{filename}-{image_num}.png'
+                image.save(self.generated_images_dir + image_filename)
 
-            image_filename = f'{image_num}.png'
-            image.save(self.generated_images_dir + image_filename)
+                self.artifact_positioner.add_image(generator.artifacts_b_boxes, image_filename)
 
-            self.artifact_positioner.add_image(generator.artifacts_b_boxes, image_filename)
-
-            orig_image = Image.fromarray(curr_image)
-            orig_image.save(self.plain_images_dir + image_filename)
+                orig_image = Image.fromarray(curr_image)
+                orig_image.save(self.plain_images_dir + image_filename)
 
         self.artifact_positioner.generate_artifacts_pos_file()

@@ -1,7 +1,8 @@
 class Config:
-    nifti_train_files = ['MRI_MSC_Dataset/sub-001/ses-1/anat/t2_spc2_an_Anonymized.nii.gz',
-                         'MRI_MSC_Dataset/sub-002/ses-1/anat/t2_spc_an_Anonymized.nii.gz',
-                         # 'MRI_MSC_Dataset/sub-003/ses-1/anat/t2_sag_an_Anonymized.nii.gz',
+    nifti_train_files = ['MRI_MSC_Dataset/sub-001/ses-1/anat/sub-001.nii.gz',
+                         # 'MRI_MSC_Dataset/sub-002/ses-1/anat/sub-002.nii.gz',
+                         # 'MRI_MSC_Dataset/sub-003/ses-1/anat/sub-003.nii.gz',
+                         # 'MRI_MSC_Dataset/sub-004/ses-1/anat/sub-004.nii.gz',
                          ]
     train_generated_dir = 'MRI_MSC_Dataset/train/generated/'
 
