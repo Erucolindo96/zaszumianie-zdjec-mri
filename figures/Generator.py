@@ -45,8 +45,9 @@ class Generator:
         return img
 
     def __export_artifacts(self, img: Image):
-        for b_box in self.artifacts_b_boxes:
-            b_box.export(img)
+        pass
+        # for b_box in self.artifacts_b_boxes:
+        #     b_box.export(img)
 
     def __draw_artifacts_bounding_boxes(self, img: Image):
         for b_box in self.artifacts_b_boxes:

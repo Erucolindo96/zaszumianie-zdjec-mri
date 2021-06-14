@@ -2,36 +2,23 @@ import nibabel as nib
 from PIL import Image, ImageFilter
 import numpy as np
 
+from TrainImageCreator import TrainImageCreator
 from config import Config
 from figures.ArtifactsPositioner import ArtifactsPositioner
 from figures.Generator import Generator
 
 
 def main():
-    nifti_file_path = Config.nifti_file
-    dest_dir = Config.dest_dir
-    orig_img_dir = Config.orig_files
+    # nifti_file_path = Config.nifti_file
+    # dest_dir = Config.dest_dir
+    # orig_img_dir = Config.orig_files
 
-    nifti_file = nib.load(nifti_file_path).get_data()
-    img_cnt = nifti_file.shape[2]
+    train_image_creator = TrainImageCreator(nifti_files_paths=Config.nifti_train_files, generated_dir=Config.train_generated_dir,
+                                            plain_dir=Config.train_plain_files)
 
-    artifact_positioner = ArtifactsPositioner(dest_dir)
+    train_image_creator.create()
 
-    for img_num in range(img_cnt):
-        image = Image.fromarray(nifti_file[:, :, img_num].astype(np.uint8))
 
-        generator = Generator()
-        image = generator.generate(image)
-
-        image_filename = '{}.png'.format(img_num)
-        image.save(dest_dir + image_filename)
-
-        artifact_positioner.add_image(generator.artifacts_b_boxes, image_filename)
-
-        orig_image = Image.fromarray(nifti_file[:, :, img_num].astype(np.uint8))
-        orig_image.save(orig_img_dir + image_filename)
-
-    artifact_positioner.generate_artifacts_pos_file()
 
 
 #
