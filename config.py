@@ -4,17 +4,17 @@ class Config:
                          # 'MRI_MSC_Dataset/sub-003/ses-1/anat/sub-003.nii.gz',
                          # 'MRI_MSC_Dataset/sub-004/ses-1/anat/sub-004.nii.gz',
                          ]
-    train_generated_dir = 'MRI_MSC_Dataset/train/generated/'
+    train_generated_dir = 'MRI_MSC_Dataset/train-descriptor-with-points-and-sizes/generated/'
 
-    train_plain_files = 'MRI_MSC_Dataset/train/plain/'
+    train_plain_files = 'MRI_MSC_Dataset/train-descriptor-with-points-and-sizes/plain/'
 
     train_image_creating_iterations = 4
 
     nifti_test_files = ['MRI_MSC_Dataset/sub-002/ses-1/anat/sub-002.nii.gz',
                         # 'MRI_MSC_Dataset/sub-001/ses-1/anat/sub-001.nii.gz',
                         ]
-    test_generated_dir = 'MRI_MSC_Dataset/test/generated/'
-    test_generated_with_b_box_dir = 'MRI_MSC_Dataset/test/bbox/'
+    test_generated_dir = 'MRI_MSC_Dataset/test-descriptor-with-points-and-sizes/generated/'
+    test_generated_with_b_box_dir = 'MRI_MSC_Dataset/test-descriptor-with-points-and-sizes/bbox/'
     test_images_cnt = 1000
 
     circle_min_r = 1

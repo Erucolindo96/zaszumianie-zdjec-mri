@@ -28,6 +28,14 @@ class BoundingBox:
 
         return [top_left, bottom_right]
 
+    def as_point_and_size(self):
+        pos = self.bounding_box_pos()
+        x = pos[0][0]
+        y = pos[0][1]
+        w = pos[1][0] - pos[0][0]
+        h = pos[1][1] - pos [0][1]
+        return (x, y, w, h)
+
     def draw(self, img: Image) -> Image:
         draw = ImageDraw.Draw(img)
         draw.rectangle(self.bounding_box_pos(), outline='orange')
