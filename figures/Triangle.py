@@ -7,10 +7,12 @@ from figures.Circle import Circle
 
 
 class Triangle:
-    def __init__(self, height: int, angle: float, center_circle: Circle):
+    def __init__(self, height: int, angle: float, center_circle: Circle, alpha: int):
         self.height = height
         self.angle = angle
         self.center_circle = center_circle
+        self.alpha = alpha
+        self.fillColor = (255, 255, 255, self.alpha)
 
     def __first_base_point(self):
         (c_x, c_y) = self.center_circle.pos
@@ -45,7 +47,7 @@ class Triangle:
     def draw(self, img: Image) -> Image:
         draw = ImageDraw.Draw(img)
         triangle = self.__triangle()
-        draw.polygon(triangle, fill='white')
+        draw.polygon(triangle, fill=self.fillColor)
         return img
 
     def blur(self, img: Image) -> Image:

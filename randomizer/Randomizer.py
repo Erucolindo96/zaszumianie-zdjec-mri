@@ -29,3 +29,6 @@ class Randomizer:
 
     def triangle_cnt(self) -> int:
         return self.random.randint(Config.min_triangle_cnt, Config.max_triangle_cnt)
+
+    def transparency(self) -> int:
+        return self.random.randint(Config.alpha_min, Config.alpha_max)

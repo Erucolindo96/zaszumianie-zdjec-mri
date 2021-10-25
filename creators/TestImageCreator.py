@@ -17,6 +17,7 @@ class TestImageCreator:
         self.generated_with_b_box_images_dir = generated_with_b_box_dir
 
         for nifti_path in nifti_files_paths:
+            print('\n\nnifti file: {}'.format(nifti_path))
             nifti = nib.load(nifti_path).get_data()
             for image_num in range(TestImageCreator.__image_cnt(nifti)):
                 self.images.append(nifti[:, :, image_num].astype(np.uint8))
@@ -31,11 +32,14 @@ class TestImageCreator:
         for art_img_num in range(self.images_count):
             plain_image_num = random.randint(0, len(self.images) - 1)
             plain_image = Image.fromarray(self.images[plain_image_num])
+            plain_image = plain_image.convert('RGBA')
+            print('\n\nobrazek numer {}'.format(art_img_num))
 
             generator = Generator()
             image = generator.generate(plain_image)
 
             (_, image_filepath) = tempfile.mkstemp(dir=self.generated_images_dir, suffix='.png')
+            print('image filepath: {}'.format(image_filepath))
             image_filename = image_filepath.split('/')[-1]
             image.save(image_filepath)
 

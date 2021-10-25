@@ -7,9 +7,11 @@ from PIL import ImageFilter
 
 class Circle:
 
-    def __init__(self, pos: Tuple[int, int], radius: int):
+    def __init__(self, pos: Tuple[int, int], radius: int, alpha: int):
         self.pos = pos
         self.radius = radius
+        self.alpha = alpha
+        self.fillColor = (255, 255, 255, self.alpha)
 
     def __top_left(self):
         return tuple(x - self.radius for x in self.pos)
@@ -27,7 +29,7 @@ class Circle:
         top_left = self.__top_left()
         bottom_right = self.__bottom_right()
         draw = ImageDraw.Draw(img)
-        draw.ellipse(top_left + bottom_right, fill='white', outline='white')
+        draw.ellipse(top_left + bottom_right, fill=self.fillColor, outline=self.fillColor)
         return img
 
     def blur(self, img: Image) -> Image:

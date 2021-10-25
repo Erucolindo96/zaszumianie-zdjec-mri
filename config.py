@@ -26,6 +26,9 @@ class Config:
     triangle_min_h = 5
     triangle_max_h = 16
 
+    alpha_max = 255
+    alpha_min = 200
+
     min_triangle_cnt = 0
     max_triangle_cnt = 5
 
