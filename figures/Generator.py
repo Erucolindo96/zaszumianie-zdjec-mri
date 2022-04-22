@@ -17,13 +17,13 @@ class Generator:
 
     def generate(self, img: Image) -> Image:
         circle_cnt = self.randomizer.circle_cnt()
-        print('Circle cnt: {}'.format(circle_cnt))
+        # print('Circle cnt: {}'.format(circle_cnt))
         for i in range(circle_cnt):
             circle_pos = self.randomizer.circle_pos()
             circle_r = self.randomizer.circle_r()
             alpha_channel = self.randomizer.transparency()
-            print("Circle pos:{}, r:{}".format(circle_pos, circle_r))
-            print('transparency: {}'.format(alpha_channel))
+            # print("Circle pos:{}, r:{}".format(circle_pos, circle_r))
+            # print('transparency: {}'.format(alpha_channel))
 
             electrode = Circle(pos=circle_pos, radius=circle_r, alpha=alpha_channel)
             img = electrode.draw(img)
@@ -58,13 +58,13 @@ class Generator:
 
     def __generate_noise_radiuses(self, drawed_electrode: Circle, alpha: int) -> List[Triangle]:
         triangle_cnt = self.randomizer.triangle_cnt()
-        print("Triangle cnt: {}".format(triangle_cnt))
+        # print("Triangle cnt: {}".format(triangle_cnt))
         noise_radiuses = []
 
         for i in range(triangle_cnt):
             h = self.randomizer.triangle_h()
             angle = self.randomizer.triangle_angle()
-            print('Triangle h: {}, angle in radians: {}'.format(h, angle))
+            # print('Triangle h: {}, angle in radians: {}'.format(h, angle))
 
             noise_radiuses.append(Triangle(height=h, angle=angle, center_circle=drawed_electrode, alpha=alpha))
 
