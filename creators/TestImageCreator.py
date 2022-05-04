@@ -10,11 +10,12 @@ from figures.Generator import Generator
 
 class TestImageCreator:
     def __init__(self, nifti_files_paths: List[str], generated_dir: str, generated_with_b_box_dir: str,
-                 images_count: int):
+                 images_count: int, generator: Generator):
         self.images = []
         self.generated_images_dir = generated_dir
         self.images_count = images_count
         self.generated_with_b_box_images_dir = generated_with_b_box_dir
+        self.generator = generator
 
         for nifti_path in nifti_files_paths:
             nifti = nib.load(nifti_path).get_data()
@@ -33,16 +34,15 @@ class TestImageCreator:
             plain_image = Image.fromarray(self.images[plain_image_num])
             plain_image = plain_image.convert('RGBA')
 
-            generator = Generator()
-            image = generator.generate(plain_image)
+            image = self.generator.generate(plain_image)
 
             (_, image_filepath) = tempfile.mkstemp(dir=self.generated_images_dir, suffix='.png')
             image_filename = image_filepath.split('/')[-1]
             image.save(image_filepath)
 
-            self.__save_with_b_boxes(image, generator, image_filename)
+            self.__save_with_b_boxes(image, self.generator, image_filename)
 
-            self.artifact_positioner.add_image(generator.artifacts_b_boxes, image_filename)
+            self.artifact_positioner.add_image(self.generator.artifacts_b_boxes, image_filename)
 
         self.artifact_positioner.generate_artifacts_pos_file()
 

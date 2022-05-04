@@ -43,3 +43,5 @@ class Config:
     export_artifacts = False
     export_artifacts_dir = 'MRI_MSC_Dataset/sub-001/artifacts/'
     blur_triangles = True
+
+    artifact_type = 'point'
