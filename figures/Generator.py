@@ -1,19 +1,13 @@
 from abc import abstractmethod
-from typing import List
 
 from PIL.Image import Image
-
-from config import Config
-from figures.BoundingBox import BoundingBox
-from figures.Circle import Circle
-from figures.Triangle import Triangle
-from randomizer.Randomizer import Randomizer
 
 
 class Generator:
 
     def __init__(self):
         self.artifacts_b_boxes = []
+        self.randomizer = None
 
     @abstractmethod
     def generate(self, img: Image) -> Image:

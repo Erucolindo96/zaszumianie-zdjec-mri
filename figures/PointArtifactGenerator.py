@@ -7,12 +7,13 @@ from figures.BoundingBox import BoundingBox
 from figures.Circle import Circle
 from figures.Triangle import Triangle
 from randomizer.Randomizer import Randomizer
-import Generator
+from figures.Generator import Generator
 
 
 class PointArtifactGenerator(Generator):
 
     def __init__(self):
+        super().__init__()
         self.randomizer = Randomizer()
         self.artifacts_b_boxes = []
 
