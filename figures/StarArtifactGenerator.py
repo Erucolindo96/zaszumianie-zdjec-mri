@@ -1,9 +1,11 @@
+import math
 from random import Random
 from math import radians, sin, cos, ceil, floor
 from numpy import round
 from config import Config
 from PIL import Image, ImageDraw, ImageFilter
 from figures.Generator import Generator
+from typing import Tuple
 
 ARTIFACTS_ELIPSE = Config.stars['ARTIFACTS_ELIPSE']
 NORD_ARM = Config.stars['ARTIFACTS_NORD_ARM']
@@ -160,38 +162,36 @@ class StarArtifactGenerator(Generator):
         """
         self.image = img.convert('LA')
 
-        # FIRST ELIPSE
-        pos_x_1 = self.randomizer.uniform(*ARTIFACTS_ELIPSE["CIRCLE_POS_X_RANGE"])
-        pos_y_1 = self.randomizer.uniform(*ARTIFACTS_ELIPSE["CIRCLE_POS_Y_RANGE"])
-        radious_range = [self.randomizer.uniform(*ARTIFACTS_ELIPSE["RADIUS_MIN"]),
-                         self.randomizer.uniform(*ARTIFACTS_ELIPSE["RADIUS_MAX"])]
-        gradient_range = ARTIFACTS_ELIPSE["GRADIENT_RANGE"]
-        transparency = ARTIFACTS_ELIPSE["TRANSPARENCY"]
-        levels = ARTIFACTS_ELIPSE["LEVELS"]
+        elipse_cnt = int(self.randomizer.randint(ARTIFACTS_ELIPSE['COUNT_MIN'], ARTIFACTS_ELIPSE['COUNT_MAX']))
+        for elipse_num in range(elipse_cnt):
+            pos_x, pos_y = self.__generate_pos()
+            radius_range = [self.randomizer.uniform(*ARTIFACTS_ELIPSE["RADIUS_MIN"]),
+                            self.randomizer.uniform(*ARTIFACTS_ELIPSE["RADIUS_MAX"])]
+            gradient_range = ARTIFACTS_ELIPSE["GRADIENT_RANGE"]
+            transparency = ARTIFACTS_ELIPSE["TRANSPARENCY"]
+            levels = ARTIFACTS_ELIPSE["LEVELS"]
 
-        degree = self.randomizer.uniform(*STRIPES["DEGREE_FIRST"])
-        self.__draw_stripes(pos_x_1, pos_y_1, degree)
-        self.__draw_gradient_elipse(
-            pos_x_1, pos_y_1, radious_range, gradient_range,
-            transparency, levels)
-        self.__draw_star_arms(pos_x_1, pos_y_1)
+            degree = int(self.randomizer.uniform(*STRIPES["DEGREE_FIRST"]))
+            self.__draw_stripes(pos_x, pos_y, degree)
+            self.__draw_gradient_elipse(
+                pos_x, pos_y, radius_range, gradient_range,
+                transparency, levels)
+            self.__draw_star_arms(pos_x, pos_y)
 
-        # SECOND ELIPSE
-        pos_x_2 = pos_x_1 + self.randomizer.uniform(-2.0, 2.0)
-        pos_y_2 = self.image.size[1] - pos_y_1 + self.randomizer.uniform(-2.0, 2.0)
-        radious_range = [self.randomizer.uniform(*ARTIFACTS_ELIPSE["RADIUS_MIN"]),
-                         self.randomizer.uniform(*ARTIFACTS_ELIPSE["RADIUS_MAX"])]
-        gradient_range = ARTIFACTS_ELIPSE["GRADIENT_RANGE"]
-        transparency = ARTIFACTS_ELIPSE["TRANSPARENCY"]
-        levels = ARTIFACTS_ELIPSE["LEVELS"]
-        degree = self.randomizer.uniform(*STRIPES["DEGREE_SECOND"])
-
-        self.__draw_stripes(pos_x_2, pos_y_2, degree)
-        self.__draw_gradient_elipse(
-            pos_x_2, pos_y_2, radious_range, gradient_range,
-            transparency, levels)
-        self.__draw_star_arms(pos_x_2, pos_y_2)
         return self.image
+
+    def __generate_pos(self) -> Tuple[int, int]:
+        too_close = True
+        pos_x = None
+        pos_y = None
+
+        while too_close:
+            pos_x = int(self.randomizer.uniform(*ARTIFACTS_ELIPSE["CIRCLE_POS_X_RANGE"]))
+            pos_y = int(self.randomizer.uniform(*ARTIFACTS_ELIPSE["CIRCLE_POS_Y_RANGE"]))
+            d = math.sqrt(pos_x * pos_x + pos_y * pos_y)
+            too_close = d < ARTIFACTS_ELIPSE['MIN_DIST']
+
+        return pos_x, pos_y
 
     def __draw_stripes(self, pos_x, pos_y, degree):
         """Draw light and dark radial stripes alternately.
