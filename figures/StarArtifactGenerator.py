@@ -4,6 +4,8 @@ from math import radians, sin, cos, ceil, floor
 from numpy import round
 from config import Config
 from PIL import Image, ImageDraw, ImageFilter
+
+from figures.BoundingBox import BoundingBox
 from figures.Generator import Generator
 from typing import Tuple
 
@@ -90,14 +92,17 @@ class StarArtifactGenerator(Generator):
         # all_pos_y = [pos_y, pos_y - high_max * cos(alpha), pos_y - high_max * cos(beta)]
         # self.blur(floor(min(all_pos_x)), floor(min(all_pos_y)), ceil(max(all_pos_x)), ceil(max(all_pos_y)))
 
-    def __draw_star_arms(self, pos_x, pos_y):
+    def __draw_star_arms(self, pos_x, pos_y) -> int:
         """Draw the five arms of the star.
 
         Args:
             pos_x (int): X position of the star.
             pos_y (int): Y position of the star.
+        :return
+        Max length from all arms
         """
         rotation = self.randomizer.uniform(0, 6.28)
+        max_length = 0
 
         # NORD STAR ARM
         high_range = [self.randomizer.uniform(*NORD_ARM["HIGH_MIN"]),
@@ -109,6 +114,7 @@ class StarArtifactGenerator(Generator):
         levels = NORD_ARM["LEVELS"]
         self.__draw_gradient_triangle(pos_x, pos_y, high_range, alpha, beta,
                                       gradient_range, transparency, levels)
+        max_length = max(high_range[1], max_length)
 
         # NORD EAST STAR
         high_range = [self.randomizer.uniform(*NORD_EAST_ARM["HIGH_MIN"]),
@@ -120,6 +126,7 @@ class StarArtifactGenerator(Generator):
         levels = NORD_EAST_ARM["LEVELS"]
         self.__draw_gradient_triangle(pos_x, pos_y, high_range, alpha, beta,
                                       gradient_range, transparency, levels)
+        max_length = max(high_range[1], max_length)
 
         # SOUT EAST STAR
         high_range = [self.randomizer.uniform(*SOUTH_EAST_ARM["HIGH_MIN"]),
@@ -131,6 +138,7 @@ class StarArtifactGenerator(Generator):
         levels = SOUTH_EAST_ARM["LEVELS"]
         self.__draw_gradient_triangle(pos_x, pos_y, high_range, alpha, beta,
                                       gradient_range, transparency, levels)
+        max_length = max(high_range[1], max_length)
 
         # SOUT WEST STAR
         high_range = [self.randomizer.uniform(*SOUTH_WEST_ARM["HIGH_MIN"]),
@@ -142,6 +150,7 @@ class StarArtifactGenerator(Generator):
         levels = SOUTH_WEST_ARM["LEVELS"]
         self.__draw_gradient_triangle(pos_x, pos_y, high_range, alpha, beta,
                                       gradient_range, transparency, levels)
+        max_length = max(high_range[1], max_length)
 
         # NORD WEST STAR
         high_range = [self.randomizer.uniform(*NORD_WEST_ARM["HIGH_MIN"]),
@@ -153,6 +162,9 @@ class StarArtifactGenerator(Generator):
         levels = NORD_WEST_ARM["LEVELS"]
         self.__draw_gradient_triangle(pos_x, pos_y, high_range, alpha, beta,
                                       gradient_range, transparency, levels)
+        max_length = max(high_range[1], max_length)
+
+        return int(max_length)
 
     def generate(self, img: Image) -> Image:
         """Generate artificats star.
@@ -172,11 +184,16 @@ class StarArtifactGenerator(Generator):
             levels = ARTIFACTS_ELIPSE["LEVELS"]
 
             degree = int(self.randomizer.uniform(*STRIPES["DEGREE_FIRST"]))
-            self.__draw_stripes(pos_x, pos_y, degree)
+            stripes_higher, stripes_lower = self.__draw_stripes(pos_x, pos_y, degree)
             self.__draw_gradient_elipse(
                 pos_x, pos_y, radius_range, gradient_range,
                 transparency, levels)
-            self.__draw_star_arms(pos_x, pos_y)
+            max_arm_len = self.__draw_star_arms(pos_x, pos_y)
+
+            self.artifacts_b_boxes.append(
+                BoundingBox.from_elipse((pos_x, pos_y), max_arm_len, Config.bounding_box_gain))
+            self.artifacts_b_boxes.append(
+                BoundingBox.from_stripes(stripes_higher, stripes_lower, Config.bounding_box_gain))
 
         return self.image
 
@@ -193,19 +210,22 @@ class StarArtifactGenerator(Generator):
 
         return pos_x, pos_y
 
-    def __draw_stripes(self, pos_x, pos_y, degree):
+    def __draw_stripes(self, pos_x, pos_y, degree) -> Tuple[Tuple[int, int], Tuple[int, int]]:
         """Draw light and dark radial stripes alternately.
 
         Args:
             pos_x (int): X position of the star.
             pos_y (int): Y position of the star.
             degree (int): The angle of the start of the stripes.
+
+            :return
+            Position of higher and lower of stripes
         """
         max_high = self.randomizer.uniform(*STRIPES["HIGH_MAX"])
         min_high = self.randomizer.uniform(*STRIPES["HIGH_MIN"])
         alpha = radians(degree)
-        point_1 = pos_x + max_high * sin(alpha), pos_y - max_high * cos(alpha)
-
+        point_1 = pos_x + max_high * sin(alpha), pos_y - max_high * cos(alpha)  # położenie początku paska
+        stripes_begin_pos = point_1
         all_xy = []
         for j in range(STRIPES["J"]):
             for i in range(STRIPES["I"]):
@@ -226,8 +246,12 @@ class StarArtifactGenerator(Generator):
                     xn = xn + 1
                     tmp = tmp + dy
                     yn = int(round(tmp))
-                    if xn > pos_x - min_high:
+                    if xn > pos_x - min_high:  # w tym momencie point_1 to położenie końca paska
                         break
+
+        stripes_begin_pos = (int(stripes_begin_pos[0]), int(stripes_begin_pos[1]))
+        point_1 = (int(point_1[0]), int(point_1[1]))
+        return stripes_begin_pos, point_1
 
     def __increase_pixel_value(self, pos_x, pos_y):
         """

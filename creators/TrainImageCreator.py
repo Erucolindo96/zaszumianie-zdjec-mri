@@ -41,6 +41,7 @@ class TrainImageCreator:
             image.save(image_filepath)
 
             self.artifact_positioner.add_image(self.generator.artifacts_b_boxes, image_filename)
+            self.generator.clean()
 
         self.artifact_positioner.generate_artifacts_pos_file()
 

@@ -43,6 +43,7 @@ class TestImageCreator:
             self.__save_with_b_boxes(image, self.generator, image_filename)
 
             self.artifact_positioner.add_image(self.generator.artifacts_b_boxes, image_filename)
+            self.generator.clean()
 
         self.artifact_positioner.generate_artifacts_pos_file()
 

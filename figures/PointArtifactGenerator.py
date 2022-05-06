@@ -15,7 +15,6 @@ class PointArtifactGenerator(Generator):
     def __init__(self):
         super().__init__()
         self.randomizer = Randomizer()
-        self.artifacts_b_boxes = []
 
     def generate(self, img: Image) -> Image:
         circle_cnt = self.randomizer.circle_cnt()
@@ -39,8 +38,9 @@ class PointArtifactGenerator(Generator):
             if not noise_radiuses:
                 img = electrode.blur(img)
 
-            self.artifacts_b_boxes.append(
-                BoundingBox(electrode, noise_radiuses, Config.bounding_box_gain, Config.export_artifacts_dir))
+            # self.artifacts_b_boxes.append(
+            #     BoundingBox(electrode, noise_radiuses, Config.bounding_box_gain, Config.export_artifacts_dir))
+            self.artifacts_b_boxes.append(BoundingBox.from_point(electrode, noise_radiuses, Config.bounding_box_gain))
 
         if Config.export_artifacts:
             self.__export_artifacts(img)

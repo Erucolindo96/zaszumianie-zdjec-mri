@@ -22,3 +22,6 @@ class Generator:
         for b_box in self.artifacts_b_boxes:
             img = b_box.draw(img)
         return img
+
+    def clean(self):
+        self.artifacts_b_boxes = []
