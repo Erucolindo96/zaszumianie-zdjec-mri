@@ -58,7 +58,7 @@ class Config:
             "LEVELS": 15,
             'COUNT_MIN': 1,
             'COUNT_MAX': 3,
-            'MIN_DIST': 20
+            'MIN_DIST': 60
         },
         'ARTIFACTS_NORD_ARM': {
             "HIGH_MIN": [3.5, 5],

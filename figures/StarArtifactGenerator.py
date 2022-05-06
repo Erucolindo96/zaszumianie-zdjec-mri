@@ -184,7 +184,7 @@ class StarArtifactGenerator(Generator):
             levels = ARTIFACTS_ELIPSE["LEVELS"]
 
             degree = int(self.randomizer.uniform(*STRIPES["DEGREE_FIRST"]))
-            stripes_higher, stripes_lower = self.__draw_stripes(pos_x, pos_y, degree)
+            stripes_higher, stripes_lower, xy_last = self.__draw_stripes(pos_x, pos_y, degree)
             self.__draw_gradient_elipse(
                 pos_x, pos_y, radius_range, gradient_range,
                 transparency, levels)
@@ -193,7 +193,7 @@ class StarArtifactGenerator(Generator):
             self.artifacts_b_boxes.append(
                 BoundingBox.from_elipse((pos_x, pos_y), max_arm_len, Config.bounding_box_gain))
             self.artifacts_b_boxes.append(
-                BoundingBox.from_stripes(stripes_higher, stripes_lower, Config.bounding_box_gain))
+                BoundingBox.from_stripes(stripes_higher, stripes_lower, xy_last, Config.bounding_box_gain))
 
         return self.image
 
@@ -210,7 +210,7 @@ class StarArtifactGenerator(Generator):
 
         return pos_x, pos_y
 
-    def __draw_stripes(self, pos_x, pos_y, degree) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+    def __draw_stripes(self, pos_x, pos_y, degree) -> Tuple[Tuple[int, int], Tuple[int, int], Tuple[int,int]]:
         """Draw light and dark radial stripes alternately.
 
         Args:
@@ -219,7 +219,7 @@ class StarArtifactGenerator(Generator):
             degree (int): The angle of the start of the stripes.
 
             :return
-            Position of higher and lower of stripes
+            Position of higher, and lower of stripes, and last value of x and y
         """
         max_high = self.randomizer.uniform(*STRIPES["HIGH_MAX"])
         min_high = self.randomizer.uniform(*STRIPES["HIGH_MIN"])
@@ -227,6 +227,8 @@ class StarArtifactGenerator(Generator):
         point_1 = pos_x + max_high * sin(alpha), pos_y - max_high * cos(alpha)  # położenie początku paska
         stripes_begin_pos = point_1
         all_xy = []
+        max_x = int(pos_x - min_high)
+        y_last = 0
         for j in range(STRIPES["J"]):
             for i in range(STRIPES["I"]):
                 alpha = radians(degree - STRIPES["D_DEGREE"] * i - STRIPES["D_DEGREE"] * STRIPES["I"] * j)
@@ -247,11 +249,13 @@ class StarArtifactGenerator(Generator):
                     tmp = tmp + dy
                     yn = int(round(tmp))
                     if xn > pos_x - min_high:  # w tym momencie point_1 to położenie końca paska
+                        y_last = yn
                         break
 
         stripes_begin_pos = (int(stripes_begin_pos[0]), int(stripes_begin_pos[1]))
         point_1 = (int(point_1[0]), int(point_1[1]))
-        return stripes_begin_pos, point_1
+
+        return stripes_begin_pos, point_1, (max_x, y_last)
 
     def __increase_pixel_value(self, pos_x, pos_y):
         """

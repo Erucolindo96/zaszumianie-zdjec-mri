@@ -46,13 +46,16 @@ class BoundingBox:
         return cls(top_left, bottom_right, 'elipse')
 
     @classmethod
-    def from_stripes(cls, higher_point, lower_point, bbox_gain):
-        top_left = (min(lower_point[0], higher_point[0]) - bbox_gain, min(lower_point[1], higher_point[1]) - bbox_gain)
-        bottom_right = (
-            max(lower_point[0], higher_point[0]) + bbox_gain, max(lower_point[1], higher_point[1]) + bbox_gain)
-        # top_left = (lower_point[0] - bbox_gain, higher_point[1] - bbox_gain)
-        # bottom_right = (higher_point[0] + bbox_gain, lower_point[1] + bbox_gain)
-        return cls(top_left, bottom_right, 'stripe')
+    def from_stripes(cls, higher_point, lower_point, xy_last, bbox_gain):
+        x_max = xy_last[0]
+        y_last = xy_last[1]
+        top_left_x = min(higher_point[0], lower_point[0]) - bbox_gain
+        top_left_y = min(y_last, higher_point[1], lower_point[1]) - bbox_gain
+        bottom_right_x = x_max + bbox_gain
+        bottom_right_y = max(y_last, higher_point[1], lower_point[1]) + bbox_gain
+        # top_left = (min(lower_point[0], higher_point[0]) - bbox_gain, min(lower_point[1], higher_point[1]) - bbox_gain)
+        # bottom_right = (xy_max[0] + bbox_gain, xy_max[1] + bbox_gain)
+        return cls((top_left_x, top_left_y), (bottom_right_x, bottom_right_y), 'stripe')
 
     def bounding_box_pos(self) -> List[Tuple[int, int]]:
         # circle_r = self.circle.radius
