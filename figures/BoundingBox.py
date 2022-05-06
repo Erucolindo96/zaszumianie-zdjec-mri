@@ -15,18 +15,6 @@ class BoundingBox:
         self.bottom_right = bottom_right
         self.type = type
 
-    # def __init__(self, circle: Circle, radiuses: List[Triangle], bb_gain: int, artifact_dir: str):
-    #     self.circle = circle
-    #     self.radiuses = radiuses
-    #     self.bounding_box_gain = bb_gain
-    #     self.type = 'point'
-    #     (_, self.artifact_file) = tempfile.mkstemp(dir=artifact_dir, suffix='.png')
-    #
-    # def __init__(self, elipse_pos: Tuple[int,int], star_arm_len: int, bb_gain: int):
-    #     self.elipse = elipse_pos
-    #     self.elipse_arm = star_arm_len
-    #     self.bounding_box_gain = bb_gain
-
     @classmethod
     def from_point(cls, circle: Circle, radiuses: List[Triangle], bb_gain: int):
         circle_r = circle.radius
@@ -53,20 +41,9 @@ class BoundingBox:
         top_left_y = min(y_last, higher_point[1], lower_point[1]) - bbox_gain
         bottom_right_x = x_max + bbox_gain
         bottom_right_y = max(y_last, higher_point[1], lower_point[1]) + bbox_gain
-        # top_left = (min(lower_point[0], higher_point[0]) - bbox_gain, min(lower_point[1], higher_point[1]) - bbox_gain)
-        # bottom_right = (xy_max[0] + bbox_gain, xy_max[1] + bbox_gain)
         return cls((top_left_x, top_left_y), (bottom_right_x, bottom_right_y), 'stripe')
 
     def bounding_box_pos(self) -> List[Tuple[int, int]]:
-        # circle_r = self.circle.radius
-        # max_radius = max(self.radiuses, key=lambda radius: radius.height) if self.radiuses else None
-        #
-        # bounding_box_side = max([max_radius.height, circle_r]) if max_radius else circle_r
-        #
-        # circle_pos = self.circle.pos
-        # top_left = tuple(coordinate - (bounding_box_side + self.bounding_box_gain) for coordinate in circle_pos)
-        # bottom_right = tuple(coordinate + (bounding_box_side + self.bounding_box_gain) for coordinate in circle_pos)
-
         return [self.top_left, self.bottom_right]
 
     def as_point_and_size(self):

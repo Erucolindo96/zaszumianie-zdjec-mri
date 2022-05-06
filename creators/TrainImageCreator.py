@@ -32,10 +32,9 @@ class TrainImageCreator:
         for image_num in range(self.images_count):
             plain_image_num = random.randint(0, len(self.images) - 1)
             plain_image = Image.fromarray(self.images[plain_image_num])
-            plain_image = plain_image.convert('RGBA')
 
             image = self.generator.generate(plain_image)
-
+            image = image.convert('RGBA')
             (_, image_filepath) = tempfile.mkstemp(dir=self.generated_images_dir, suffix='.png')
             image_filename = image_filepath.split('/')[-1]
             image.save(image_filepath)

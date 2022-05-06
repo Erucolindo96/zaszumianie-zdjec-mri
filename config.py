@@ -44,7 +44,7 @@ class Config:
     export_artifacts_dir = 'MRI_MSC_Dataset/sub-001/artifacts/'
     blur_triangles = True
 
-    artifact_type = 'stars'  # available ['point', 'stars']
+    artifact_type = 'point'  # available ['point', 'stars']
 
     stars = {
         'ARTIFACTS_ELIPSE': {
@@ -57,7 +57,7 @@ class Config:
             "GRADIENT_RANGE": [115, 255],
             "LEVELS": 15,
             'COUNT_MIN': 1,
-            'COUNT_MAX': 3,
+            'COUNT_MAX': 2,
             'MIN_DIST': 60
         },
         'ARTIFACTS_NORD_ARM': {

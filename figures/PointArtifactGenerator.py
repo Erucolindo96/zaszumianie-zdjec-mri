@@ -17,18 +17,15 @@ class PointArtifactGenerator(Generator):
         self.randomizer = Randomizer()
 
     def generate(self, img: Image) -> Image:
+        img = img.convert('RGBA')
         circle_cnt = self.randomizer.circle_cnt()
-        # print('Circle cnt: {}'.format(circle_cnt))
         for i in range(circle_cnt):
             circle_pos = self.randomizer.circle_pos()
             circle_r = self.randomizer.circle_r()
             alpha_channel = self.randomizer.transparency()
-            # print("Circle pos:{}, r:{}".format(circle_pos, circle_r))
-            # print('transparency: {}'.format(alpha_channel))
 
             electrode = Circle(pos=circle_pos, radius=circle_r, alpha=alpha_channel)
             img = electrode.draw(img)
-            # img = electrode.blur(img)
             noise_radiuses = self.__generate_noise_radiuses(drawed_electrode=electrode, alpha=alpha_channel)
             for radius in noise_radiuses:
                 img = radius.draw(img)
@@ -38,8 +35,6 @@ class PointArtifactGenerator(Generator):
             if not noise_radiuses:
                 img = electrode.blur(img)
 
-            # self.artifacts_b_boxes.append(
-            #     BoundingBox(electrode, noise_radiuses, Config.bounding_box_gain, Config.export_artifacts_dir))
             self.artifacts_b_boxes.append(BoundingBox.from_point(electrode, noise_radiuses, Config.bounding_box_gain))
 
         if Config.export_artifacts:
@@ -50,13 +45,11 @@ class PointArtifactGenerator(Generator):
 
     def __generate_noise_radiuses(self, drawed_electrode: Circle, alpha: int) -> List[Triangle]:
         triangle_cnt = self.randomizer.triangle_cnt()
-        # print("Triangle cnt: {}".format(triangle_cnt))
         noise_radiuses = []
 
         for i in range(triangle_cnt):
             h = self.randomizer.triangle_h()
             angle = self.randomizer.triangle_angle()
-            # print('Triangle h: {}, angle in radians: {}'.format(h, angle))
 
             noise_radiuses.append(Triangle(height=h, angle=angle, center_circle=drawed_electrode, alpha=alpha))
 
