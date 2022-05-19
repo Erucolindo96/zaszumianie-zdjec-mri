@@ -210,7 +210,7 @@ class StarArtifactGenerator(Generator):
 
         return pos_x, pos_y
 
-    def __draw_stripes(self, pos_x, pos_y, degree) -> Tuple[Tuple[int, int], Tuple[int, int], Tuple[int,int]]:
+    def __draw_stripes(self, pos_x, pos_y, degree) -> Tuple[Tuple[int, int], Tuple[int, int], Tuple[int, int]]:
         """Draw light and dark radial stripes alternately.
 
         Args:
@@ -240,7 +240,7 @@ class StarArtifactGenerator(Generator):
                 xn, yn = int(round(point_1[0])), int(round(point_1[1]))
                 tmp = yn
                 for i in range(int(round(x_distance))):
-                    if (xn, yn) not in all_xy:
+                    if (xn, yn) not in all_xy and xn < self.image.size[0] and yn < self.image.size[1]:
                         if (j % 2) == 0:
                             self.__increase_pixel_value(xn, yn)
                         else:
