@@ -16,6 +16,7 @@ SOUTH_EAST_ARM = Config.stars['ARTIFACTS_SOUTH_EAST_ARM']
 SOUTH_WEST_ARM = Config.stars['ARTIFACTS_SOUTH_WEST_ARM']
 NORD_WEST_ARM = Config.stars['ARTIFACTS_NORD_WEST_ARM']
 STRIPES = Config.stars['ARTIFACTS_STRIPES']
+GENERATE = Config.stars['GENERATE']
 
 
 class StarArtifactGenerator(Generator):
@@ -184,16 +185,20 @@ class StarArtifactGenerator(Generator):
             levels = ARTIFACTS_ELIPSE["LEVELS"]
 
             degree = int(self.randomizer.uniform(*STRIPES["DEGREE_FIRST"]))
-            stripes_higher, stripes_lower, xy_last = self.__draw_stripes(pos_x, pos_y, degree)
-            self.__draw_gradient_elipse(
-                pos_x, pos_y, radius_range, gradient_range,
-                transparency, levels)
-            max_arm_len = self.__draw_star_arms(pos_x, pos_y)
+            if GENERATE == 'BOTH' or GENERATE == 'STRIPES':
+                stripes_higher, stripes_lower, xy_last = self.__draw_stripes(pos_x, pos_y, degree)
 
-            self.artifacts_b_boxes.append(
-                BoundingBox.from_elipse((pos_x, pos_y), max_arm_len, Config.bounding_box_gain))
-            self.artifacts_b_boxes.append(
-                BoundingBox.from_stripes(stripes_higher, stripes_lower, xy_last, Config.bounding_box_gain))
+                self.artifacts_b_boxes.append(
+                    BoundingBox.from_stripes(stripes_higher, stripes_lower, xy_last, Config.bounding_box_gain))
+
+            if GENERATE == 'BOTH' or GENERATE == 'STARS':
+                self.__draw_gradient_elipse(
+                    pos_x, pos_y, radius_range, gradient_range,
+                    transparency, levels)
+                max_arm_len = self.__draw_star_arms(pos_x, pos_y)
+
+                self.artifacts_b_boxes.append(
+                    BoundingBox.from_elipse((pos_x, pos_y), max_arm_len, Config.bounding_box_gain))
 
         return self.image
 
